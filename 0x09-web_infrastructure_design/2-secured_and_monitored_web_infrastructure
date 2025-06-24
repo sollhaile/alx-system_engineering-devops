@@ -1,0 +1,22 @@
+Secure and Monitored Web Infrastructure Design
+
+Components:
+- 3 firewalls
+- 1 Load Balancer (HAProxy) with SSL certificate
+- 2 Web/Application servers
+- 1 MySQL Primary DB and 1 Replica DB
+- 3 Monitoring Agents (e.g., Sumologic)
+
+Why use them:
+- Firewalls protect each layer (LB, Web, DB) by allowing only specific traffic
+- SSL encrypts communication, protecting user data
+- Monitoring agents send metrics/logs to track performance and uptime
+
+Monitoring Example:
+- To monitor QPS, collect access logs from Nginx or DB logs via agent
+- Metrics sent to dashboard tools like Grafana or Sumologic
+
+Issues:
+- SSL termination at load balancer means traffic to internal servers is unencrypted
+- Single MySQL write server is a SPOF
+- Combining all roles (web, app, db) on one server reduces performance and scalability

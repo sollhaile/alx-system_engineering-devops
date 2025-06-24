@@ -1,0 +1,10 @@
+User → DNS (resolves www.foobar.com to 8.8.8.8) → Internet → Server (IP: 8.8.8.8)
+                                                      |
+                                                -----------------
+                                                |               |
+                                             Nginx          Application Server
+                                              |                 |
+                                          Static files     Application code
+                                                 \            /
+                                                  \         /
+                                                  MySQL Database

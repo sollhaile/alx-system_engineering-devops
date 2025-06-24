@@ -1,0 +1,28 @@
+Distributed Web Infrastructure Design
+
+Components:
+- 2 Web Servers (Nginx)
+- 1 Load Balancer (HAProxy)
+- 2 Application Servers
+- 1 MySQL Database Cluster (1 Primary + 1 Replica)
+
+How it works:
+1. User types www.foobar.com → DNS resolves to Load Balancer IP (8.8.8.8)
+2. Load Balancer uses round-robin to distribute traffic to Web Servers.
+3. Web Servers forward requests to Application Servers (code logic).
+4. Application Servers connect to the Primary database for writes.
+5. Read-heavy tasks go to the Replica DB for performance.
+
+Load Balancer:
+- HAProxy with Round-Robin algorithm
+- Active-Active setup: both web servers serve traffic
+
+Database:
+- Primary-Replica (Master-Slave) replication
+- Primary handles writes, Replica handles reads
+
+Issues:
+- SPOF: Load Balancer
+- No security (firewall/HTTPS)
+- No monitoring for health checks or alerts
+

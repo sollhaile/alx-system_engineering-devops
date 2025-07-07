@@ -1,0 +1,5 @@
+Host solomon
+    HostName 10.195.45.18
+    User ubuntu
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no

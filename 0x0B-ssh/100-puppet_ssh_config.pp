@@ -9,3 +9,4 @@ file_line { 'Turn off passwd auth':
   line  => '  PasswordAuthentication no',
   match => '^\s*PasswordAuthentication',
 }
+

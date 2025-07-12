@@ -1,0 +1,34 @@
+#!/bin/bash
+# 0-world_wide_web
+
+# Usage:
+# ./0-world_wide_web domain [subdomain]
+
+function get_subdomain_info {
+    local domain=$1
+    local subdomain=$2
+    dig ${subdomain}.${domain} +short | awk -v sd=$subdomain '
+    {
+      ip=$0
+      record="A"
+      print "The subdomain " sd " is a " record " record and points to " ip
+    }'
+}
+
+domain=$1
+subdomain=$2
+
+if [ -z "$domain" ]; then
+    echo "Usage: $0 domain [subdomain]"
+    exit 1
+fi
+
+subs=(www lb-01 web-01 web-02)
+
+if [ -z "$subdomain" ]; then
+    for sd in "${subs[@]}"; do
+        get_subdomain_info $domain $sd
+    done
+else
+    get_subdomain_info $domain $subdomain
+fi

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Function to query DNS info
+query_dns() {
+    local sub=$1
+    local domain=$2
+    local fqdn="${sub}.${domain}"
+
+    result=$(dig "$fqdn" +short)
+    if [[ -n "$result" ]]; then
+        echo "The subdomain $sub is a A record and points to $result"
+    else
+        echo "The subdomain $sub does not exist or has no A record"
+    fi
+}
+
+# Main logic
+main() {
+    local domain=$1
+    local subdomain=$2
+
+    if [[ -z "$domain" ]]; then
+        echo "Usage: $0 domain [subdomain]"
+        exit 1
+    fi
+
+    if [[ -n "$subdomain" ]]; then
+        query_dns "$subdomain" "$domain"
+    else
+        for sub in www lb-01 web-01 web-02; do
+            query_dns "$sub" "$domain"
+        done
+    fi
+}
+
+main "$@"

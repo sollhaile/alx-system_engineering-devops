@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Script to install and configure Nginx on Ubuntu to return "Hello World!" on GET /
+
+# Exit on any error
+set -e
+
+# Update package list
+apt-get update -y
+
+# Install nginx if not installed
+apt-get install -y nginx
+
+# Set custom index page with "Hello World!"
+echo 'Hello World!' > /var/www/html/index.html
+
+# Start nginx using service (not systemctl)
+service nginx start

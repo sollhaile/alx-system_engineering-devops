@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Transfers a file to a remote server's home directory using scp with SSH key
+
+# === Check if correct number of arguments is passed ===
+if [ "$#" -lt 4 ]; then
+  echo "Usage: $0 PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+  exit 1
+fi
+
+# === Assign arguments to variables ===
+FILE_PATH=$1
+SERVER_IP=$2
+USERNAME=$3
+SSH_KEY=$4
+
+# === Check if the file to transfer exists ===
+if [ ! -f "$FILE_PATH" ]; then
+  echo "Error: File '$FILE_PATH' does not exist."
+  exit 1
+fi
+
+# === Check if the SSH key file exists ===
+if [ ! -f "$SSH_KEY" ]; then
+  echo "Error: SSH key '$SSH_KEY' does not exist."
+  exit 1
+fi
+
+# === Perform the file transfer ===
+scp -i "$SSH_KEY" -o StrictHostKeyChecking=no "$FILE_PATH" "$USERNAME@$SERVER_IP:~/"
+

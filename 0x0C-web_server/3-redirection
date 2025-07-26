@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Script to configure a 301 redirect on /redirect_me
+
+# Install nginx if not installed
+apt-get update
+apt-get install -y nginx
+
+# Create custom config if not present
+CONFIG_FILE="/etc/nginx/sites-available/default"
+
+# Backup original config
+cp "$CONFIG_FILE" "${CONFIG_FILE}.bak"
+
+# Add the redirect location block
+sed -i '/^\tlocation \/ {/i \\\tlocation /redirect_me {\n\t\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\t}' "$CONFIG_FILE"
+
+# Restart nginx to apply changes
+systemctl restart nginx
+

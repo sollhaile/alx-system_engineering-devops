@@ -1,35 +1,28 @@
 #!/usr/bin/env bash
+# Displays DNS information for specified domain and subdomains
 
-# Function to query DNS info
-query_dns() {
-    local sub=$1
-    local domain=$2
-    local fqdn="${sub}.${domain}"
-
-    result=$(dig "$fqdn" +short)
-    if [[ -n "$result" ]]; then
-        echo "The subdomain $sub is a A record and points to $result"
-    else
-        echo "The subdomain $sub does not exist or has no A record"
+get_dns_info() {
+    local domain=$1
+    local subdomain=$2
+    local result
+    
+    result=$(dig "$subdomain.$domain" +short)
+    if [ -n "$result" ]; then
+        echo "The subdomain $subdomain is a A record and points to $result"
     fi
 }
 
-# Main logic
 main() {
     local domain=$1
     local subdomain=$2
-
-    if [[ -z "$domain" ]]; then
-        echo "Usage: $0 domain [subdomain]"
-        exit 1
-    fi
-
-    if [[ -n "$subdomain" ]]; then
-        query_dns "$subdomain" "$domain"
+    
+    if [ -z "$subdomain" ]; then
+        get_dns_info "$domain" "www"
+        get_dns_info "$domain" "lb-01"
+        get_dns_info "$domain" "web-01"
+        get_dns_info "$domain" "web-02"
     else
-        for sub in www lb-01 web-01 web-02; do
-            query_dns "$sub" "$domain"
-        done
+        get_dns_info "$domain" "$subdomain"
     fi
 }
 

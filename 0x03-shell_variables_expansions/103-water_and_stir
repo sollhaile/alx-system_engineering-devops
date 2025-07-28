@@ -1,0 +1,55 @@
+#!/bin/bash
+water="water"
+stir="stir"
+bestchol="bestchol"
+
+clean() {
+  echo "$1" | grep -o "[$2]" | tr -d '\n'
+}
+
+to_dec() {
+  echo "$1" | awk -v digits="$2" '
+    BEGIN {
+      base = length(digits);
+      split(digits, d_arr, "");
+      for(i=1; i<=base; i++) val[d_arr[i]] = i-1;
+      res = 0;
+    }
+    {
+      for(i=1; i<=length($0); i++) {
+        c = substr($0,i,1);
+        res = res*base + val[c];
+      }
+      print res;
+    }
+  '
+}
+
+
+from_dec() {
+  num=$1
+  base_str=$2
+  base=${#base_str}
+  if (( num == 0 )); then
+    echo "${base_str:0:1}"
+    return
+  fi
+  res=""
+  while (( num > 0 )); do
+    r=$(( num % base ))
+    num=$(( num / base ))
+    c=${base_str:r:1}
+    res="$c$res"
+  done
+  echo "$res"
+}
+
+w_clean=$(clean "$WATER" "$water")
+s_clean=$(clean "$STIR" "$stir")
+
+w_dec=$(to_dec "$w_clean" "$water")
+s_dec=$(to_dec "$s_clean" "$stir")
+
+sum=$(( w_dec + s_dec ))
+
+from_dec $sum "$bestchol"

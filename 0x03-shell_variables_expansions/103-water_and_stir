@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $WATER $STIR | awk '{gsub(/./,"& ",$1);gsub(/./,"& ",$2);print $1,$2}' | tr 'water' '0-4' | tr 'stir' '0-3' | awk '{print $1+$2}' | bc | awk '{do{printf substr("bestchol",$1%8+1,1);$1=int($1/8)}while($1>0);print""}' | rev
+read w s <<< "$WATER $STIR"; for ((i=0;i<${#w};i++)); do a=$((a*5+$(tr 'water' '0-4' <<< ${w:i:1}))); done; for ((i=0;i<${#s};i++)); do b=$((b*4+$(tr 'stir' '0-3' <<< ${s:i:1}))); done; c=$((a+b)); while ((c>0)); do d=$(($c%8)); e=$(tr '0-7' 'bestchol' <<< $d)$e; c=$(($c/8)); done; echo $e

@@ -1,55 +1,44 @@
 #!/bin/bash
-water="water"
-stir="stir"
-bestchol="bestchol"
-
-clean() {
-  echo "$1" | grep -o "[$2]" | tr -d '\n'
-}
-
-to_dec() {
-  echo "$1" | awk -v digits="$2" '
-    BEGIN {
-      base = length(digits);
-      split(digits, d_arr, "");
-      for(i=1; i<=base; i++) val[d_arr[i]] = i-1;
-      res = 0;
+awk -v WATER="$WATER" -v STIR="$STIR" '
+BEGIN {
+  water="water"
+  stir="stir"
+  bestchol="bestchol"
+  # function to clean input by allowed chars
+  clean = function(str, base,   i, c, res) {
+    res = ""
+    for(i=1; i<=length(str); i++) {
+      c = substr(str,i,1)
+      if(index(base,c)>0) res = res c
     }
-    {
-      for(i=1; i<=length($0); i++) {
-        c = substr($0,i,1);
-        res = res*base + val[c];
-      }
-      print res;
+    return res
+  }
+  # function to convert from base to decimal
+  to_dec = function(str, base,   i, c, val, res, base_len) {
+    base_len = length(base)
+    res=0
+    for(i=1; i<=length(str); i++) {
+      c=substr(str,i,1)
+      val=index(base,c)-1
+      res = res*base_len + val
     }
-  '
+    return res
+  }
+  # function to convert from decimal to base
+  from_dec = function(num, base,   res, base_len, r) {
+    base_len = length(base)
+    if(num==0) return substr(base,1,1)
+    res=""
+    while(num>0) {
+      r = num % base_len
+      num = int(num / base_len)
+      res = substr(base,r+1,1) res
+    }
+    return res
+  }
+  w = clean(WATER, water)
+  s = clean(STIR, stir)
+  sum = to_dec(w, water) + to_dec(s, stir)
+  print from_dec(sum, bestchol)
 }
-
-
-from_dec() {
-  num=$1
-  base_str=$2
-  base=${#base_str}
-  if (( num == 0 )); then
-    echo "${base_str:0:1}"
-    return
-  fi
-  res=""
-  while (( num > 0 )); do
-    r=$(( num % base ))
-    num=$(( num / base ))
-    c=${base_str:r:1}
-    res="$c$res"
-  done
-  echo "$res"
-}
-
-w_clean=$(clean "$WATER" "$water")
-s_clean=$(clean "$STIR" "$stir")
-
-w_dec=$(to_dec "$w_clean" "$water")
-s_dec=$(to_dec "$s_clean" "$stir")
-
-sum=$(( w_dec + s_dec ))
-
-from_dec $sum "$bestchol"
+'
